@@ -8,8 +8,9 @@
 
 import UIKit
 import AVKit
+import Vision
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,12 @@ class ViewController: UIViewController {
         view.layer.addSublayer(previewLayer)
         previewLayer.frame = view.frame
         
+        let dataOutput = AVCaptureVideoDataOutput()
+        dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+        captureSession.addOutput(dataOutput)
+    }
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        print("ok, finally", Date())
     }
 
 
