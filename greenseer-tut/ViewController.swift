@@ -34,7 +34,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.addOutput(dataOutput)
     }
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("ok, finally", Date())
+//        print("ok, finally", Date())
+        guard let model = try? VNCoreMLModel(for: SqueezeNet().model) else {return}
+        
+        guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
+        let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
+            guard let results = finishedReq.results as? [VNClassificationObservation] else {return}
+            guard let firstObservation = results.first else {return}
+            print(firstObservation.identifier, firstObservation.confidence)
+//            print(finishedReq.results)
+        }
+        
+        try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
     }
 
 
