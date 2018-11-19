@@ -35,7 +35,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
 //        print("ok, finally", Date())
-        guard let model = try? VNCoreMLModel(for: SqueezeNet().model) else {return}
+//        guard let model = try? VNCoreMLModel(for: SqueezeNet().model) else {return}
+        guard let model = try? VNCoreMLModel(for: Resnet50().model) else {return}
         
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
         let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
